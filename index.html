@@ -132,14 +132,14 @@ function loadUsers() {
   const usersRef = ref(db, "users");
   onValue(usersRef, (snap) => {
     const data = snap.val() || {};
-    const users = Object.values(data).filter(u => u.uid !== currentUser.uid);
+    const users = Object.values(data).filter(u => u && u.uid && u.uid !== currentUser.uid);
     renderUserList(users, document.getElementById("search-input").value.toLowerCase());
   });
 }
 
 function renderUserList(users, filter = "") {
   const list = document.getElementById("users-list");
-  const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter));
+  const filtered = users.filter(u => u && u.name && u.email && (u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter)));
   if (filtered.length === 0) {
     list.innerHTML = `<div class="empty-state">No users found</div>`;
     return;
@@ -160,7 +160,7 @@ document.getElementById("search-input").addEventListener("input", function() {
   const usersRef = ref(db, "users");
   get(usersRef).then(snap => {
     const data = snap.val() || {};
-    const users = Object.values(data).filter(u => u.uid !== currentUser.uid);
+    const users = Object.values(data).filter(u => u && u.uid && u.uid !== currentUser.uid);
     renderUserList(users, this.value.toLowerCase());
   });
 });
